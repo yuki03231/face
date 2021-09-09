@@ -1,0 +1,55 @@
+ /* video 要素の上に canvas 要素を置くための CSS */
+  #container {              /* コンテナ用の div  */
+    position: relative;     /* 座標指定を相対値指定に */
+  }
+  #video {                  /* カメラ映像を流す video */
+    transform: scaleX(-1);  /* 左右反転 */
+  }
+  #canvas {                 /* 描画用の canvas */
+    transform: scaleX(-1);  /* 左右反転 */
+    position: absolute;     /* 座標指定を絶対値指定に */
+    left: 0;                /* X座標を0に */
+    top: 0;                 /* Y座標を0に */
+  }
+
+html, body {
+  height: 100%;
+  margin: 0;
+}
+
+#wrapper {
+  display: flex;
+  flex-flow: column nowrap;
+  /* The above is shorthand for:
+     flex-direction: column,
+     flex-wrap: nowrap */
+  height: 100%;
+}
+
+#lower-area {
+  flex: 1 1 auto;
+  /* The above is shorthand for:
+     flex-grow: 1,
+     flex-shrink: 1,
+     flex-basis: auto  */
+  position: relative;
+}
+
+#join-screen {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  position: absolute;
+  z-index: 10;
+  background-color: #c0c0c0;
+}
+
+#join-form {
+  text-align: center;
+  width: 100%;
+}
+
+#chat-screen {
+  display: none;
+}

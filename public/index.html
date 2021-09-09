@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<link rel="stylesheet" href="index.css">
+<title>カメラオフ会議支援アプリ</title>
+</head>
+ 
+<body>
+  <div id="wrapper">
+    <div id="lower-area">
+        <div id="join-screen">
+            <form id="join_form" action="">
+                会議室名 : <input type="text" id="input_roomname" autocomplete="off" />
+                ユーザー名: <input type="text" id="input_nickname" autocomplete="off" /><button type="submit">join</button>
+            </form>        
+        </div>
+
+        <div id="chat-screen">
+            <form id="chat-form" action="">
+                会議室名 : <input type="text" id="text_roomname" readonly="readonly">
+                ユーザー名 : <input type="text" id="text_username" readonly="readonly">
+            </form>
+            <div id="icon"></div> <!-- 感情アイコン表示用 div 要素-->
+            <div id="concentration"></div> <!--集中度表示用 div 要素-->
+            <div id="status"></div> <!--参加状態表示用 div 要素-->
+            <form id="send" action=""><!--sendボタン（非表示）-->
+              <button id="sendbutton" type="submit" style="visibility:hidden">Send</button>     
+            </form>
+            <ul id ="message_list"></ul><!--自動メッセージ欄-->
+            <div id="display"></div><!--相手の感情表示欄-->
+        </div>
+    </div>
+</div>
+
+
+  <div id="container">  <!-- video の上に canvas を置くための div 要素 -->
+    <video id="video" width="388" height="291" autoplay></video>  <!-- カメラ映像を流す video -->
+    <canvas id="canvas" width="388" height="291"></canvas>        <!-- 重ねて描画する canvas -->
+  </div>
+   
+  <!-- clmtrackr 関連ファイルの読み込み -->
+  <script src="clmtrackr/clmtrackr.js"></script>          <!-- clmtrackr のメインライブラリの読み込み -->
+  <script src="clmtrackr/model_pca_20_svm_emotion.js"></script>   <!-- 顔モデルの読み込み -->
+  <script src="clmtrackr/emotionClassifier.js"></script>  <!-- 感情を分類する外部関数の読み込み -->
+  <script src="clmtrackr/emotionModel.js"></script>       <!-- 感情モデルの読み込み -->
+  <script src="/socket.io/socket.io.js"></script>         <!--socket.ioライブラリの読み込み-->
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script> <!--jqueryライブラリの読み込み-->
+  <script src="facetrack.js"></script>                    <!--顔認識用jsの読み込み-->
+  <script src="client.js"></script>                       <!--クライアントjsの読み込み-->
+  
+</body>
+</html>
