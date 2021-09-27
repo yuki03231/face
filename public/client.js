@@ -52,8 +52,9 @@ $( '#join_form' ).submit(
            //感情認識データを取り出す
            var icon = document.getElementById("icon").innerHTML; 
            var conce = document.getElementById("concentration").innerHTML; 
+           var action = document.getElementById("action").innerHTML; 
            var status = document.getElementById("status").innerHTML; 
-           var data = icon + "<br>" + conce + "<br>" + status;
+           var data = icon + "<br>" + conce + "<br>" + action + "<br>" + status;
            
            socket.emit('send',data); //'send'イベントとしてサーバーにデータを送信
     

@@ -3,8 +3,7 @@ var video = document.getElementById("video");           // video 要素を取得
 var canvas = document.getElementById("canvas");         // canvas 要素の取得
 var context = canvas.getContext("2d");                  // canvas の context の取得
 
-var oldnose = new Array(2);                          //左目の空の座標
-var count = 0; //回数をかぞえる変数
+var oldnose = new Array(2);                             //鼻の空の座標
  
 // getUserMedia によるカメラ映像の取得
 var media = navigator.mediaDevices.getUserMedia({       // メディアデバイスを取得
@@ -16,9 +15,9 @@ media.then((stream) => {                                // メディアデバイ
 });
  
 // clmtrackr の開始
-var tracker = new clm.tracker();  // tracker オブジェクトを作成
-tracker.init(pModel);             // tracker を所定のフェイスモデルで初期化
-tracker.start(video);             // video 要素内でフェイストラッキング開始
+var tracker = new clm.tracker();                        // tracker オブジェクトを作成
+tracker.init(pModel);                                   // tracker を所定のフェイスモデルで初期化
+tracker.start(video);                                   // video 要素内でフェイストラッキング開始
  
 // 感情分類の開始
 var classifier = new emotionClassifier();               // emotionClassifier オブジェクトを作成
@@ -35,19 +34,20 @@ function drawLoop() {
   showIcon(emotion);                                    // 感情アイコンの表示
   document.getElementById("sendbutton").click()         //sendボタンの自動クリック
   context.clearRect(0, 0, canvas.width, canvas.height); // canvas をクリア
-  tracker.draw(canvas);                               // canvas にトラッキング結果を描画
+  tracker.draw(canvas);                                 // canvas にトラッキング結果を描画
   showConcentration(positions);                         // 集中度の表示
+  showAction(positions);                                // うなずき・首振り表示
 }
 drawLoop();                                             // drawLoop 関数をトリガー
  
-// ★感情データの表示
+//感情データの表示
 function showEmotionData(emo) {
   var str ="";                                          // データの文字列を入れる変数
   for(var i = 0; i < emo.length; i++) {                 // 全ての感情（6種類）について
     str += emo[i].emotion + ": "                        // 感情名
          + emo[i].value.toFixed(1) + "<br>";            // 感情の程度（小数第一位まで）
   }
-  var dat= document.getElementById("dat");             // データ表示用div要素の取得
+  var dat= document.getElementById("dat");              // データ表示用div要素の取得
   dat.innerHTML = str;                                  // データ文字列の表示
 }
 
@@ -71,22 +71,70 @@ function showIcon(emo){
   }
 }
 
-//集中度評価
-function showConcentration(pos){
-  //頷き検知
-  var nose = pos[62];  //鼻の頂点の座標
-	var dynose = nose[1] - oldnose[1]; //１フレームごとの変化量を求める
-	oldnose[1] = nose[1]; //座標の更新
+//うなずき・首振り検知
+function showAction(pos){
+  var nose = pos[62];                //鼻の頂点の座標
+  var dynose = nose[1] - oldnose[1]; //１フレームごとの変化量を求める
+  var dxnose = nose[0] - oldnose[0]; //１フレームごとの変化量を求める
 
-  if(dynose > 4){              //鼻の変化量が4を超えた場合
+  oldnose[0] = nose[0];              //座標の更新
+	oldnose[1] = nose[1];              //座標の更新
+
+  if(dynose > 4){              //鼻のy座標の変化量が4を超えた場合
     var str = "うなずいています"
-    var conce = document.getElementById("concentration");
-    conce.style.color = "green";                     //緑文字
-    conce.innerHTML = str;
+    var action = document.getElementById("action");
+    action.style.color = "green";                     //緑文字
+    action.innerHTML = str;
+  }
+  else if(dxnose > 4){         //鼻のx座標の変化量が4を超えた場合
+    var str = "首を横に振っています"
+    var action = document.getElementById("action");
+    action.style.color = "red";                     //赤文字
+    action.innerHTML = str;
   }
   else{
     var str = "";                     //動作がない場合は表示しない
+    var action = document.getElementById("action");
+    action.innerHTML = str;
+  }
+}
+
+//集中度評価
+function showConcentration(pos){
+  var points = 0; //集中度点数
+
+  //あくび検知
+  var lipH = pos[53][1] - pos[57][1]; //唇の高さ
+  var mouth = (pos[57][1] - pos[60][1]) / lipH; //口の開閉の比率
+  if(mouth >= 3){      //あくびを検知したら
+    points -= 1;         //点数減点
+  }
+
+
+  //眼球によるよそ見検知
+  var eyeX = (pos[27][0] - pos[23][0]) / (pos[25][0] - pos[23][0]); //左目の眼球の位置の比率
+  if(eyeX < 0.48 || eyeX > 0.52){  //よそ見をしていたら
+    points -= 1;
+  }
+
+  //顔の向きによるよそ見検知
+  var faceL = pos[62][0] - pos[2][0];  //鼻から左の輪郭までの距離
+  var faceR = pos[12][0] - pos[62][0]; //鼻から右の輪郭までの距離
+  var face = 90 * (faceL - faceR) / (faceL + faceR); //左右の顔の角度の比率
+  if(face < -70 || face > 70 ){ //よそ見をしていたら
+    points -= 1;
+  }
+
+  if(points < 0){ //何らかの動作で点数が減点されている場合
+    var str = "集中していません";                     
     var conce = document.getElementById("concentration");
+    conce.style.color = "red";                     //赤文字
+    conce.innerHTML = str;
+  }
+  else {          //減点されていない場合
+    var str = "集中しています";                     
+    var conce = document.getElementById("concentration");
+    conce.style.color = "green";                     //緑文字
     conce.innerHTML = str;
   }
 }
