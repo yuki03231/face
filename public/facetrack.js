@@ -110,10 +110,9 @@ function showConcentration(pos){
     points -= 1;         //点数減点
   }
 
-
   //眼球によるよそ見検知
   var eyeX = (pos[27][0] - pos[23][0]) / (pos[25][0] - pos[23][0]); //左目の眼球の位置の比率
-  if(eyeX < 0.48 || eyeX > 0.52){  //よそ見をしていたら
+  if(eyeX < 0.48 || eyeX > 0.54){  //よそ見をしていたら
     points -= 1;
   }
 
