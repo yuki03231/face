@@ -1,6 +1,7 @@
  /* video 要素の上に canvas 要素を置くための CSS */
   #container {              /* コンテナ用の div  */
     position: relative;     /* 座標指定を相対値指定に */
+    margin-top:50%;
   }
   #video {                  /* カメラ映像を流す video */
     transform: scaleX(-1);  /* 左右反転 */
@@ -52,4 +53,16 @@ html, body {
 
 #chat-screen {
   display: none;
+  position: absolute;
+  left: 350px;
+}
+
+#a{
+  margin-top: 10%;
+}
+
+#display{
+  position: absolute;
+  top: 75px; 
+  left: 350px; 
 }

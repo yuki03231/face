@@ -12,8 +12,10 @@
     <div id="lower-area">
         <div id="join-screen">
             <form id="join_form" action="">
+                カメラオフ会議支援アプリへようこそ<br><br>
+                接続したいユーザーと同じ会議室名を入力してください。半角と全角は区別されます。同時接続は２人まで可能です。<br><br>
                 会議室名 : <input type="text" id="input_roomname" autocomplete="off" />
-                ユーザー名: <input type="text" id="input_nickname" autocomplete="off" /><button type="submit">join</button>
+                ユーザー名: <input type="text" id="input_nickname" autocomplete="off" /><button type="submit">参加する</button>
             </form>        
         </div>
 
@@ -22,10 +24,13 @@
                 会議室名 : <input type="text" id="text_roomname" readonly="readonly">
                 ユーザー名 : <input type="text" id="text_username" readonly="readonly">
             </form>
+            <div id="a">
+            あなたの情報
             <div id="icon"></div> <!-- 感情アイコン表示用 div 要素-->
             <div id="concentration"></div> <!--集中度表示用 div 要素-->
             <div id="action"></div> <!--うなずき・首振り表示用 div 要素-->
             <div id="status"></div> <!--参加状態表示用 div 要素-->
+            </div>
             <form id="send" action=""><!--sendボタン（非表示）-->
               <button id="sendbutton" type="submit" style="visibility:hidden">Send</button>     
             </form>
